@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
+	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
@@ -29,7 +29,7 @@ type Fruits struct {
 
 func main() {
 
-	//GETリクエスト
+	//GETリクエスト(Eco作って→routngとfunction→ポート番号書いてスタート)
 	e := echo.New()
 	e.GET("/show", show)
 	e.Logger.Fatal(e.Start(":9990"))
@@ -50,17 +50,16 @@ func show(c echo.Context) error {
 	rows, err := db.Query("select id, name, price from gomysql")
 	if err != nil {
 		fmt.Println(err)
-
 	}
 
 	//ループ処理 + Next関数
-	for rows.Next() {
+	for i := 0; i < 3; i++ {
+
+		rows.Next()
 		err = rows.Scan(&fruits.ID, &fruits.Name, &fruits.Price)
 		if err != nil {
 			fmt.Println(err)
 		}
-		response, _ := json.Marshal(fruits)
-		fmt.Println(response)
 	}
-	return err
+	return c.JSON(http.StatusOK, fruits)
 }
