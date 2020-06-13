@@ -28,21 +28,22 @@ type Fruits struct {
 }
 
 func main() {
-
-	//GETリクエスト(Eco作って→routngとfunction→ポート番号書いてスタート)
+	//Echo立ち上げる
 	e := echo.New()
+	//GETリクエスト（ルーティング）
 	e.GET("/show", show)
-	e.Logger.Fatal(e.Start(":9990"))
+	//サーバー起動
+	e.Start(":9000")
 }
 
 func show(c echo.Context) error {
+
 	fruits := Fruits{}
 
 	//接続
 	db, err = sql.Open("mysql", "root:11194222@/gomysql")
 	if err != nil {
 		fmt.Println(err)
-
 	}
 	defer db.Close()
 
@@ -59,7 +60,12 @@ func show(c echo.Context) error {
 		err = rows.Scan(&fruits.ID, &fruits.Name, &fruits.Price)
 		if err != nil {
 			fmt.Println(err)
+		} else if i == 3 {
+			break
 		}
+
 	}
+
 	return c.JSON(http.StatusOK, fruits)
+
 }
