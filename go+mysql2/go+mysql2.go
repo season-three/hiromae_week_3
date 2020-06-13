@@ -2,31 +2,47 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/labstack/echo"
 )
 
-var id int
-var name string
-var price int
+//ID 宣言
+var ID int
+
+//Name 宣言
+var Name string
+
+//Price 宣言
+var Price int
 var err error
 var db *sql.DB
 
 //Fruits 構造体
 type Fruits struct {
-	id    int
-	name  string
-	price int
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Price int    `json:"price"`
 }
 
 func main() {
+
+	//GETリクエスト
+	e := echo.New()
+	e.GET("/show", show)
+	e.Logger.Fatal(e.Start(":9990"))
+}
+
+func show(c echo.Context) error {
 	fruits := Fruits{}
 
 	//接続
 	db, err = sql.Open("mysql", "root:11194222@/gomysql")
 	if err != nil {
 		fmt.Println(err)
+
 	}
 	defer db.Close()
 
@@ -34,17 +50,17 @@ func main() {
 	rows, err := db.Query("select id, name, price from gomysql")
 	if err != nil {
 		fmt.Println(err)
+
 	}
 
 	//ループ処理 + Next関数
 	for rows.Next() {
-		err = rows.Scan(&fruits.id, &fruits.name, &fruits.price)
+		err = rows.Scan(&fruits.ID, &fruits.Name, &fruits.Price)
 		if err != nil {
 			fmt.Println(err)
 		}
-
-		fmt.Println(fruits)
-
+		response, _ := json.Marshal(fruits)
+		fmt.Println(response)
 	}
-
+	return err
 }
