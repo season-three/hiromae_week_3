@@ -37,7 +37,7 @@ func main() {
 }
 
 func show(c echo.Context) error {
-
+	//構造体（Fruitsの中にあるフィールドをfruits変数として定義？）
 	fruits := Fruits{}
 
 	//接続
@@ -65,7 +65,18 @@ func show(c echo.Context) error {
 		}
 
 	}
-
 	return c.JSON(http.StatusOK, fruits)
 
+	result := run()
+	c.JSON(http.StatusOK, result)
+}
+
+func run() []Fruits {
+	fruits := Fruits{}
+	xs := make([]Fruits, 0)
+	for _, n := range fruits {
+		x := Fruits{ID: n, Name: n, Price: n}
+		xs = append(xs, x)
+	}
+	return xs
 }
