@@ -67,9 +67,9 @@ func show(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, fruits)
 
-	result := run()
-	c.JSON(http.StatusOK, result)
 }
+
+//fruitsの配列の変数を作ってreturnする
 
 func run() []Fruits {
 	fruits := Fruits{}
@@ -79,4 +79,10 @@ func run() []Fruits {
 		xs = append(xs, x)
 	}
 	return xs
+}
+
+func result() {
+	result := run()
+	return c.JSON(http.StatusOK, result)
+
 }
