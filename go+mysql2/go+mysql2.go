@@ -9,6 +9,13 @@ import (
 	"github.com/labstack/echo"
 )
 
+//Fruit 構造体
+type Fruit struct {
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Price int    `json:"price"`
+}
+
 //ID 宣言
 var ID int
 
@@ -20,13 +27,6 @@ var Price int
 var err error
 var db *sql.DB
 
-//Fruits 構造体
-type Fruits struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Price int    `json:"price"`
-}
-
 func main() {
 	//Echo立ち上げる
 	e := echo.New()
@@ -35,10 +35,24 @@ func main() {
 	//サーバー起動
 	e.Start(":9000")
 }
-
 func show(c echo.Context) error {
-	//構造体（Fruitsの中にあるフィールドをfruits変数として定義？）
-	fruits := Fruits{}
+	fruits := []*Fruit{
+		{
+			ID: "%d", &ID,
+			Name: "%s", &Name,
+			Price: "%d", &Price,
+		},
+		{
+			ID: "%d", &ID,
+			Name: "%s", &Name,
+			Price: "%d", &Price,
+		},
+		{
+			ID: "%d", &ID,
+			Name: "%s", &Name,
+			Price: "%d", &Price,
+		},
+	}
 
 	//接続
 	db, err = sql.Open("mysql", "root:11194222@/gomysql")
@@ -57,32 +71,16 @@ func show(c echo.Context) error {
 	for i := 0; i < 3; i++ {
 
 		rows.Next()
-		err = rows.Scan(&fruits.ID, &fruits.Name, &fruits.Price)
+		err = rows.Scan("%d %s %d", &ID, &Name, &Price)
 		if err != nil {
 			fmt.Println(err)
 		} else if i == 3 {
 			break
 		}
+		fmt.Println(ID, Name, Price)
 
 	}
+
+	//fruitsにID, Name, Priceを入れる関数？？
 	return c.JSON(http.StatusOK, fruits)
-
-}
-
-//fruitsの配列の変数を作ってreturnする
-
-func run() []Fruits {
-	fruits := Fruits{}
-	xs := make([]Fruits, 0)
-	for _, n := range fruits {
-		x := Fruits{ID: n, Name: n, Price: n}
-		xs = append(xs, x)
-	}
-	return xs
-}
-
-func result() {
-	result := run()
-	return c.JSON(http.StatusOK, result)
-
 }
