@@ -26,6 +26,7 @@ var Name string
 var Price int
 var err error
 var db *sql.DB
+var fruits string
 
 func main() {
 	//Echo立ち上げる
@@ -36,23 +37,6 @@ func main() {
 	e.Start(":9000")
 }
 func show(c echo.Context) error {
-	fruits := []*Fruit{
-		{
-			ID: "%d", &ID,
-			Name: "%s", &Name,
-			Price: "%d", &Price,
-		},
-		{
-			ID: "%d", &ID,
-			Name: "%s", &Name,
-			Price: "%d", &Price,
-		},
-		{
-			ID: "%d", &ID,
-			Name: "%s", &Name,
-			Price: "%d", &Price,
-		},
-	}
 
 	//接続
 	db, err = sql.Open("mysql", "root:11194222@/gomysql")
@@ -71,16 +55,31 @@ func show(c echo.Context) error {
 	for i := 0; i < 3; i++ {
 
 		rows.Next()
-		err = rows.Scan("%d %s %d", &ID, &Name, &Price)
+		err = rows.Scan(&ID, &Name, &Price)
 		if err != nil {
 			fmt.Println(err)
 		} else if i == 3 {
 			break
 		}
-		fmt.Println(ID, Name, Price)
-
+		fmt.Println(fruits)
 	}
 
-	//fruitsにID, Name, Priceを入れる関数？？
+	fruits := []*Fruit{
+		{
+			ID:    ID,
+			Name:  Name,
+			Price: Price,
+		},
+		{
+			ID:    ID,
+			Name:  Name,
+			Price: Price,
+		},
+		{
+			ID:    ID,
+			Name:  Name,
+			Price: Price,
+		},
+	}
 	return c.JSON(http.StatusOK, fruits)
 }
