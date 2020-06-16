@@ -38,6 +38,14 @@ func main() {
 }
 func show(c echo.Context) error {
 
+	fruits := []*Fruit{
+		{
+			ID:    ID,
+			Name:  Name,
+			Price: Price,
+		},
+	}
+
 	//接続
 	db, err = sql.Open("mysql", "root:11194222@/gomysql")
 	if err != nil {
@@ -53,33 +61,19 @@ func show(c echo.Context) error {
 
 	//ループ処理 + Next関数
 	for i := 0; i < 3; i++ {
-
 		rows.Next()
 		err = rows.Scan(&ID, &Name, &Price)
 		if err != nil {
 			fmt.Println(err)
-		} else if i == 3 {
-			break
+			if err != nil {
+				fmt.Println(err)
+			} else if i == 3 {
+				break
+			}
 		}
-		fmt.Println(fruits)
-	}
+		fruits = append(fruits)
 
-	fruits := []*Fruit{
-		{
-			ID:    ID,
-			Name:  Name,
-			Price: Price,
-		},
-		{
-			ID:    ID,
-			Name:  Name,
-			Price: Price,
-		},
-		{
-			ID:    ID,
-			Name:  Name,
-			Price: Price,
-		},
 	}
 	return c.JSON(http.StatusOK, fruits)
+
 }
